@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest # 使用 MySQL 最新版镜像
+    container_name: cardhubnow_mysql # 容器名称
+    restart: always
+    ports:
+      - "3306:3306" # 映射本机 3306 端口到容器
+    environment:
+      MYSQL_ROOT_PASSWORD: cardhub1234 # 设置 root 用户密码
+      MYSQL_DATABASE: cardhubnow # 默认数据库名称
+      MYSQL_USER: cardhubuser # 非 root 用户
+      MYSQL_PASSWORD: cardhub1234 # 非 root 用户密码
+    volumes:
+      - ./mysql_data:/var/lib/mysql # 数据持久化存储
+
+volumes:
+  mysql_data:
