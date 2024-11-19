@@ -1,5 +1,6 @@
+// src/models/index.mjs
 import { Sequelize } from 'sequelize';
-import { resolve } from 'path';
+import sequelize from '../config/database.mjs'; // 修改为默认导入
 
 // 导入各个模型
 import initUsers from './User.mjs';
@@ -17,15 +18,18 @@ import initPointTransactions from './PointTransactions.mjs';
 import initWallets from './Wallets.mjs';
 import initWalletTransactions from './WalletTransactions.mjs';
 
-// 初始化 Sequelize 实例
-const sequelize = new Sequelize({
-    dialect: 'mysql',
-    host: process.env.DB_HOST,
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    logging: false,
-});
+// 测试数据库连接
+async function testConnection() {
+    try {
+        await sequelize.authenticate();
+        console.log('✅ Database connection established successfully.');
+    } catch (error) {
+        console.error('❌ Unable to connect to the database:', error);
+        process.exit(1);
+    }
+}
+
+testConnection();
 
 // 初始化模型
 const models = {
@@ -63,7 +67,7 @@ const {
     WalletTransactions 
 } = models;
 
-// Users 和其他表
+// Users 和其他表的关联
 Users.hasOne(UserSensitiveInfo, { foreignKey: 'user_id' });
 UserSensitiveInfo.belongsTo(Users, { foreignKey: 'user_id' });
 
